@@ -62,7 +62,7 @@ interface IModifOptions<O> {
 
 export type QueryParams = {
   [key: string | undefined]: string | number | undefined;
-} | string;
+};
 
 ///////////////////////// USE MODIF /////////////////////////
 
@@ -259,7 +259,7 @@ interface VuexResource<O, A> {
   /**
   * @returns ` data, isLng, err, isErr, all, one, mutitem` 
   */
-  getAllMutation(state: VuexResourceState<O, A>, options: { params?: QueryParams, config?: RawAxiosRequestConfig }): VuexResourceState<O, A>;
+  getAllMutation(state: VuexResourceState<O, A>, options: { params?: string | QueryParams, config?: RawAxiosRequestConfig }): VuexResourceState<O, A>;
 
   /**
  * @returns ` data, isLng, err, isErr, all, one, mutitem` 
@@ -523,7 +523,7 @@ interface GetRequest<T> extends Request<T> {
    * @param state  vuex state
    * @param options 
    */
-  getMutation(state: CleanState<T>, options: { param?: number | string | QueryParams, config?: RawAxiosRequestConfig }): CleanState<T>;
+  getMutation(state: CleanState<T>, options?: { param?: number | string | QueryParams, config?: RawAxiosRequestConfig }): CleanState<T>;
 }
 
 /**
@@ -547,7 +547,7 @@ interface PostRequest<T> extends Request<T> {
    * For `post` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  postMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
+  postMutation<Dto>(state: CleanState<T>, options: { data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
 }
 
 /**
@@ -595,7 +595,7 @@ interface PatchRequest<T> extends Request<T> {
    * For `putch` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  patchMutation<Dto>(state: CleanState<T>, options: { config?: RawAxiosRequestConfig, data: Dto, options?: IModifOptions<O> }): CleanState<T>;
+  patchMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
 }
 
 

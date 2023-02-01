@@ -137,13 +137,13 @@ export class VuexResouce extends Resource {
     state['isLng'] = false;
   }
 
-  getAllMutation(state, { params, config }) {
-    this.params = params;
-    let urlWithParams = this._urlWithParams(params);
+  getAllMutation(state, options) {
+    this.params = options.params;
+    let urlWithParams = this._urlWithParams(options.params);
     if ((Date.now() - this.whenAllGet) > (this.expiresIn * 60000)) {
       this._setLoad();
       this._setStateLoad(state);
-      this.runner.get(urlWithParams, config)
+      this.runner.get(urlWithParams, options.config)
         .then((res) => {
           this.whenAllGet = Date.now();
           this.state.all.value = res.data;
