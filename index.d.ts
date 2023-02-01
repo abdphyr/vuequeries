@@ -16,8 +16,8 @@ export declare function definePostRequest<T>(url: string, tokenKey?: string): Po
 export declare function definePutRequest<T>(options: PutReqOpts): PutRequest<T>;
 export declare function definePutRequest<T>(url: string, tokenKey?: string): PutRequest<T>;
 
-export declare function definePatchRequest<T>(options: PutReqOpts): PutRequest<T>;
-export declare function definePatchRequest<T>(url: string, tokenKey?: string): PutRequest<T>;
+export declare function definePatchRequest<T>(options: PatchReqOpts): PatchRequest<T>;
+export declare function definePatchRequest<T>(url: string, tokenKey?: string): PatchRequest<T>;
 
 export declare function defineDeleteRequest<T>(options: DeleteReqOpts): DeleteRequest<T>;
 export declare function defineDeleteRequest<T>(url: string, tokenKey?: string): DeleteRequest<T>;
@@ -61,7 +61,7 @@ interface IModifOptions<O> {
 }
 
 export type QueryParams = {
-  [key: string | undefined]: string | number | undefined;
+  [key: string]: string | number;
 };
 
 ///////////////////////// USE MODIF /////////////////////////
@@ -427,6 +427,7 @@ type GetReqOpts = {
 }
 type PostReqOpts = RequestOptions
 type PutReqOpts = RequestOptions
+type PatchReqOpts = RequestOptions
 type DeleteReqOpts = RequestOptions
 
 /**
@@ -547,7 +548,7 @@ interface PostRequest<T> extends Request<T> {
    * For `post` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  postMutation<Dto>(state: CleanState<T>, options: { data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
+  postMutation<Dto>(state: CleanState<T>, options: { data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<T> }): CleanState<T>;
 }
 
 /**
@@ -571,7 +572,7 @@ interface PutRequest<T> extends Request<T> {
    * For `put` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  putMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
+  putMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<T> }): CleanState<T>;
 }
 
 /**
@@ -595,7 +596,7 @@ interface PatchRequest<T> extends Request<T> {
    * For `putch` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  patchMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
+  patchMutation<Dto>(state: CleanState<T>, options: { param: number | string, data: Dto, config?: RawAxiosRequestConfig, options?: IModifOptions<T> }): CleanState<T>;
 }
 
 
@@ -619,7 +620,7 @@ interface DeleteRequest<T> extends Request<T> {
    * For `delete` request.
    * @returns ` data, isLng, err, isErr, data` 
    */
-  deleteMutation(state: CleanState<T>, options: { param: number | string, config?: RawAxiosRequestConfig, options?: IModifOptions<O> }): CleanState<T>;
+  deleteMutation(state: CleanState<T>, options: { param: number | string, config?: RawAxiosRequestConfig, options?: IModifOptions<T> }): CleanState<T>;
 }
 
 export { }
