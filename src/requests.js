@@ -148,11 +148,11 @@ export class GetRequest extends Request {
   }
 
   getMutation(state, options) {
-    let path = this._urlWithParams(options.param)
+    let path = this._urlWithParams(options && options['param'])
     if ((Date.now() - this.#whenGet) > (this.#expiresIn * 60000)) {
       this._setLoad();
       this._setStateLoad(state);
-      this.runner.get(path, options.config)
+      this.runner.get(path, options && options['config'])
         .then((res) => {
           this.#whenGet = Date.now();
           this._setData(res.data);
