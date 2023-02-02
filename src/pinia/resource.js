@@ -1,10 +1,9 @@
 import { ref, computed } from "vue";
-import { runner } from "./axios";
+import { runner } from "../axios";
 
-class Resource {
+export class PiniaResource {
   state;
   computedState;
-  cleanState;
   params;
   url;
   expiresIn;
@@ -27,23 +26,6 @@ class Resource {
     }
     this.runner = runner(tokenKey ?? options.tokenKey);
     this.computedState = computed(() => this.state);
-    this.cleanState = {
-      isLng: true,
-      isErr: false,
-      err: {},
-      all: {},
-      one: null,
-      mutitem: null,
-    }
-  }
-
-  _setCleanState({ isLng, isErr, err, all, one, mutitem }) {
-    this.cleanState.isLng = isLng ?? this.cleanState.isLng;
-    this.cleanState.isErr = isErr ?? this.cleanState.isErr;
-    this.cleanState.err = err ?? this.cleanState.err;
-    this.cleanState.all = all ?? this.cleanState.all;
-    this.cleanState.one = one ?? this.cleanState.one;
-    this.cleanState.mutitem = mutitem ?? this.cleanState.mutitem;
   }
 
   _urlWithParams(params) {
@@ -88,14 +70,12 @@ class Resource {
     this.state.err.value = error;
     this.state.isErr.value = true;
     this.state.isLng.value = false;
-    this._setCleanState({ err: error, isErr: true, isLng: false });
   }
 
   _setLoad() {
     this.state.isLng.value = true;
     this.state.err.value = {};
     this.state.isErr.value = false;
-    this._setCleanState({ isLng: true, err: {}, isErr: false });
   }
 
   _setMutationData(data) {
@@ -104,7 +84,6 @@ class Resource {
     this.state.mutitem.value = data;
     this.state.isLng.value = false;
     this.getAll(this.params);
-    this._setCleanState({ mutitem: data, isLng: false });
   }
 
   _returner({ which, modif }) {
@@ -116,145 +95,7 @@ class Resource {
       err: computed(() => this.state.err.value)
     }
   }
-}
 
-
-export class VuexResouce extends Resource {
-  _setStateLoad(state) {
-    state['isLng'] = true;
-    state['isErr'] = false;
-    state['err'] = {};
-  }
-
-  _setStateData(state, data) {
-    state['all'] = data;
-    state['isLng'] = false;
-  }
-
-  _setStateError(state, error) {
-    state['err'] = error
-    state['isErr'] = true;
-    state['isLng'] = false;
-  }
-
-  getAllMutation(state, options) {
-    this.params = options && options['params'];
-    let urlWithParams = this._urlWithParams(options && options['params']);
-    if ((Date.now() - this.whenAllGet) > (this.expiresIn * 60000)) {
-      this._setLoad();
-      this._setStateLoad(state);
-      this.runner.get(urlWithParams, options && options['config'])
-        .then((res) => {
-          this.whenAllGet = Date.now();
-          this.state.all.value = res.data;
-          this.state.isLng.value = false;
-          this._setCleanState({ all: res.data, isLng: false });
-          state['all'] = res.data;
-          state['isLng'] = false;
-        })
-        .catch((error) => {
-          this._setError(error.response.data);
-          this._setStateError(state, error.response.data);
-        })
-    }
-    return this.cleanState;
-  }
-
-  getOneMutation(state, { param, config }) {
-    if ((Date.now() - this.whenOneGet) > (this.expiresIn * 60000)) {
-      this._setLoad();
-      this._setStateLoad(state);
-      this.runner.get(this.url + "/" + param, config)
-        .then((res) => {
-          this.whenOneGet = Date.now();
-          this.state.one.value = res.data;
-          this.state.isLng.value = false;
-          this._setCleanState({ one: res.data, isLng: false });
-          state['one'] = res.data;
-          state['isLng'] = false;
-        })
-        .catch((error) => {
-          this._setError(error.response.data);
-          this._setStateError(state, error.response.error);
-        })
-    }
-    return this.cleanState;
-  }
-
-  createMutation(state, { config, data, options }) {
-    this._setLoad();
-    this._setStateLoad(state);
-    this.runner.post(this.url, data, config)
-      .then((res) => {
-        this._setMutationData(res.data);
-        state['mutitem'] = res.data;
-        state['isLng'] = false;
-        options?.onSuccess && options.onSuccess(res.data);
-      })
-      .catch((error) => {
-        this._setError(error.response.data);
-        this._setStateError(state, error.response.error);
-        options?.onError && options.onError(error.response.data);
-      })
-    return this.cleanState;
-  }
-
-  updateMutation(state, { param, config, data, options }) {
-    this._setLoad();
-    this._setStateLoad(state);
-    this.runner.put(this.url + "/" + param, data, config)
-      .then((res) => {
-        this._setMutationData(res.data);
-        state['mutitem'] = res.data;
-        state['isLng'] = false;
-        options?.onSuccess && options.onSuccess(res.data);
-      })
-      .catch((error) => {
-        this._setError(error.response.data);
-        this._setStateError(state, error.response.error);
-        options?.onError && options.onError(error.response.data);
-      })
-    return this.cleanState;
-  }
-
-  patchMutation(state, { param, config, data, options }) {
-    this._setLoad();
-    this._setStateLoad(state);
-    this.runner.patch(this.url + "/" + param, data, config)
-      .then((res) => {
-        this._setMutationData(res.data);
-        state['mutitem'] = res.data;
-        state['isLng'] = false;
-        options?.onSuccess && options.onSuccess(res.data);
-      })
-      .catch((error) => {
-        this._setError(error.response.data);
-        this._setStateError(state, error.response.error);
-        options?.onError && options.onError(error.response.data);
-      })
-    return this.cleanState;
-  }
-
-  deleteMutation(state, { param, config, options }) {
-    this._setLoad();
-    this._setStateLoad(state);
-    this.runner.delete(this.url + "/" + param, config)
-      .then((res) => {
-        this._setMutationData(res.data);
-        state['mutitem'] = res.data;
-        state['isLng'] = false;
-        options?.onSuccess && options.onSuccess(res.data);
-      })
-      .catch((error) => {
-        this._setError(error.response.data);
-        this._setStateError(state, error.response.error);
-        options?.onError && options.onError(error.response.data);
-      })
-    return this.cleanState;
-  }
-}
-
-export class ApiResource extends Resource {
   getAll(params, config) {
     this.params = params;
     let urlWithParams = this._urlWithParams(params);
