@@ -1,4 +1,3 @@
-import { ref, computed } from "vue";
 import { runner } from "../axios";
 
 class Request {
@@ -28,17 +27,17 @@ class Request {
 
   _setError(error) {
     this._setState({ err: error, isErr: true, isLng: false, data: {} });
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 
   _setData(data) {
     this._setState({ data, isLng: false });
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 
   _setLoad() {
     this._setState({ isLng: true, err: {}, isErr: false });
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 }
 

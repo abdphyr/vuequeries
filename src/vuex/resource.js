@@ -78,12 +78,12 @@ export class VuexResouce {
 
   _setError(error) {
     this._setState({ err: error, isErr: true, isLng: false });
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 
   _setLoad() {
     this._setState({ isLng: true, err: {}, isErr: false });
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 
   _setMutationData(data) {
@@ -91,7 +91,7 @@ export class VuexResouce {
     this.whenOneGet = 0;
     this._setState({ mutitem: data, isLng: false });
     this.getAll(this.commit, this.params);
-    this.commit(this.MUTNAME, this.state);
+    this.commit(this.MUTNAME, Object.create(this.state));
   }
 
   getAll(commit, options) {
@@ -104,7 +104,7 @@ export class VuexResouce {
         .then((res) => {
           this.whenAllGet = Date.now();
           this._setState({ all: res.data, isLng: false });
-          this.commit(this.MUTNAME, this.state);
+          this.commit(this.MUTNAME, Object.create(this.state));
         })
         .catch((error) => {
           this._setError(error.response.data);
@@ -120,7 +120,7 @@ export class VuexResouce {
         .then((res) => {
           this.whenOneGet = Date.now();
           this._setState({ one: res.data, isLng: false });
-          this.commit(this.MUTNAME, this.state);
+          this.commit(this.MUTNAME, Object.create(this.state));
         })
         .catch((error) => {
           this._setError(error.response.data);
