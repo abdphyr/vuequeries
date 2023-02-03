@@ -33,6 +33,14 @@ export type IError = {
 }
 
 /**
+ * QueryParams
+ */
+export type QueryParams = {
+  [key: string]: string | number;
+};
+
+
+/**
  * MODIFICATION OPTIONS
  */
 interface IModifOptions<O> {

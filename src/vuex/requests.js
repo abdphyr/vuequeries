@@ -27,17 +27,17 @@ class Request {
 
   _setError(error) {
     this._setState({ err: error, isErr: true, isLng: false, data: {} });
-    this.commit(this.MUTNAME, Object.create(this.state));
+    this.commit(this.MUTNAME, { ...this.state });
   }
 
   _setData(data) {
     this._setState({ data, isLng: false });
-    this.commit(this.MUTNAME, Object.create(this.state));
+    this.commit(this.MUTNAME, { ...this.state });
   }
 
   _setLoad() {
     this._setState({ isLng: true, err: {}, isErr: false });
-    this.commit(this.MUTNAME, Object.create(this.state));
+    this.commit(this.MUTNAME, { ...this.state });
   }
 }
 
